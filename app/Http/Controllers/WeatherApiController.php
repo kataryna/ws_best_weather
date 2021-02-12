@@ -18,15 +18,19 @@ class WeatherApiController extends Controller
      */
     public function __construct()
     {
+        //authorization with Api-Token header
+        $this->middleware('auth');
+        
         $this->EXTERNAL_WEATHER_API = array (
             'url' =>'http://api.openweathermap.org/data/2.5/weather', 
             'key'=>'4e2c1bf2de8139abcf1bd84e27cd6c72'
             );
+        
     }
     
     /**
      *
-     * @param string $query - example: "Gdańsk|Gdynia|Sopot"
+     * @param string $query - example: "Gdańsk;Gdynia;Sopot"
      */
     public function index($query)
     {

@@ -13,9 +13,7 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
-$router->get('/{query}', 'WeatherApiController@index');
+$router->get('/{query}', 'WeatherApiController@index'); 
+ 
 
 
