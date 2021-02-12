@@ -68,11 +68,17 @@ class CityList
         $this->sortByParameter($parameter);
          
         $position_in_rank = 0;
-        foreach ($this->cityList as $city)
+                
+        for($i=0; $i<count($this->cityList); $i++)
         {
             $score = (100 - 10 * $position_in_rank) * $modifier;
-            $city->setScoreForParameter($parameter,  $score);
-            $position_in_rank++;
+            $this->cityList[$i]->setScoreForParameter($parameter,  $score);
+            
+            //if value of parameter is the same, position in rank isn't incremented
+            if($i < count($this->cityList)-1 && $this->cityList[$i]->$parameter != $this->cityList[$i+1]->$parameter)
+            {
+                $position_in_rank++;
+            }
         }
     }
     
