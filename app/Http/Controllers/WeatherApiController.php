@@ -86,7 +86,7 @@ class WeatherApiController extends Controller
         return response()->json($result);
     }
     
-    private function errorMessage(string $message, int $code=200)
+    private function errorMessage(string $message, int $code=400)
     {
         return response()->json(['error'=>$message,'code'=>$code],$code);
     }
