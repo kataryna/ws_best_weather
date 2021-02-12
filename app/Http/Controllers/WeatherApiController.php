@@ -30,7 +30,19 @@ class WeatherApiController extends Controller
      */
     public function index($query)
     {
-        $city_names = explode(';', urldecode($query)); 
+        //parse input data
+        $city_names = array_filter(explode(';', urldecode($query)), function($value) { return !empty($value); } ); 
+        
+        //validate input data
+        if (count($city_names) < 2) 
+        {
+            return $this->errorMessage('Give me minimal 2 cities. This is correct format: Gdańsk;Gdynia;Sopot');
+        }
+        elseif (count($city_names) > 4)
+        {
+            return $this->errorMessage('Give me maximal 4 cities. This is correct format: Gdańsk;Gdynia;Sopot');
+        }
+        
         
         $appClient = new Client();
         $cityList = new CityList();        
@@ -38,7 +50,8 @@ class WeatherApiController extends Controller
         
         foreach ($city_names as $city_name)
         {       
-
+            try 
+            {
                 //get weather data about the city from external api
                 $response = $appClient->request('GET',$this->EXTERNAL_WEATHER_API['url'] , 
                         ['query' => ['q' => $city_name, 'APPID' => $this->EXTERNAL_WEATHER_API['key']]]
@@ -51,7 +64,16 @@ class WeatherApiController extends Controller
                         $row->wind->speed, 
                         $row->main->humidity
                         );
-
+            }
+            catch (ClientException $e) {
+                $response = $e->getResponse(); 
+                //return error message given from external api
+                return $this->errorMessage(json_decode($response->getBody())->message,$response->getStatusCode());
+            }    
+            catch (RequestException | ConnectException $e) {
+                //return error connection
+                return $this->errorMessage('error connection to weather api', 500);
+            }
  
         }
         
@@ -60,6 +82,10 @@ class WeatherApiController extends Controller
         return response()->json($result);
     }
     
+    private function errorMessage(string $message, int $code=200)
+    {
+        return response()->json(['error'=>$message,'code'=>$code],$code);
+    }
 
     //
 }
