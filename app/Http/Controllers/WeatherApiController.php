@@ -10,7 +10,10 @@ use App\Models\CityList;
 
 class WeatherApiController extends Controller
 {
-    
+    const EXTERNAL_WEATHER_API = array (
+            'url' =>'http://api.openweathermap.org/data/2.5/weather', 
+            'key'=>'4e2c1bf2de8139abcf1bd84e27cd6c72'
+            );
     /**
      * Create a new controller instance.
      *
@@ -20,11 +23,6 @@ class WeatherApiController extends Controller
     {
         //authorization with Api-Token header
         $this->middleware('auth');
-        
-        $this->EXTERNAL_WEATHER_API = array (
-            'url' =>'http://api.openweathermap.org/data/2.5/weather', 
-            'key'=>'4e2c1bf2de8139abcf1bd84e27cd6c72'
-            );
         
     }
     
@@ -57,8 +55,8 @@ class WeatherApiController extends Controller
             try 
             {
                 //get weather data about the city from external api
-                $response = $appClient->request('GET',$this->EXTERNAL_WEATHER_API['url'] , 
-                        ['query' => ['q' => $city_name, 'APPID' => $this->EXTERNAL_WEATHER_API['key']]]
+                $response = $appClient->request('GET',self::EXTERNAL_WEATHER_API['url'] , 
+                        ['query' => ['q' => $city_name, 'APPID' => self::EXTERNAL_WEATHER_API['key']]]
                         );
                 $row = json_decode($response->getBody());
                 
