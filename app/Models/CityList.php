@@ -91,32 +91,20 @@ class CityList
     {
         switch($parameter) {
             case 'temperature':
-                usort($this->cityList, function ($a, $b) {
+            case 'wind':
+            case 'humidity':
+            case 'score':    
+                usort($this->cityList, function ($a, $b) use ($parameter) {
                     //sort by value descending
-                    return -($a->temperature <=> $b->temperature);   
+                    return -($a->$parameter <=> $b->$parameter);   
                     });
-                break;    
-            
-            case 'wind': 
-                usort($this->cityList, function ($a, $b) {
-                    //sort by value descending
-                    return -($a->wind <=> $b->wind);   
+                break;  
+            default:
+                usort($this->cityList, function ($a, $b)  {
+                    //default sort by name ascending
+                    return $a->name <=> $b->name;   
                     });
-                break;       
-            
-            case 'humidity': 
-                usort($this->cityList, function ($a, $b) {
-                    //sort by value descending
-                    return -($a->humidity <=> $b->humidity);   
-                    });
-                break;      
-            
-            case 'score':
-                usort($this->cityList, function ($a, $b) {
-                    //sort by value descending
-                    return -($a->score <=> $b->score);   
-                    });
-                break;     
+                break;  
         }
         
     }
